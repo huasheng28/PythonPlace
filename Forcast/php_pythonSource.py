@@ -6,7 +6,6 @@ import signal
 import sys
 import socket
 import os
-import threading
 
 import process
 
@@ -48,6 +47,7 @@ LISTEN_PORT = 21230     #服务侦听端口
 #    请不要随意修改下面的代码
 # -------------------------------------------------
 if __name__ == '__main__':
+
     print ("-------------------------------------------")
     print ("- PPython Service")
     print ("- Time: %s" % time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())) )
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     #print ("charset: %s" % CHARSET)
     print ("Server startup...")
 
-    while 1:
+    while 1:  
         connection,address = sock.accept()  #收到一个请求
 
         print ("-------------------------------------------")
