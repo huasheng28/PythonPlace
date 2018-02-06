@@ -12,7 +12,7 @@ import process
 # -------------------------------------------------
 # 基本配置
 # -------------------------------------------------
-LISTEN_PORT = 21230     #服务侦听端口
+LISTEN_PORT = 21231     #服务侦听端口
 
 # -------------------------------------------------
 # Oracle数据库连接配置
@@ -49,23 +49,23 @@ LISTEN_PORT = 21230     #服务侦听端口
 if __name__ == '__main__':
 
     print ("-------------------------------------------")
-    print ("- Python Service")
-    print ("- Time: %s" % time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
+    print ("- PPython Service")
+    print ("- Time: %s" % time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())) )
     print ("-------------------------------------------")
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #TCP/IP
-    sock.bind(('', LISTEN_PORT))
+    sock.bind(('', LISTEN_PORT))  
     sock.listen(5)  
 
     print ("Listen port: %d" % LISTEN_PORT)
     #print ("charset: %s" % CHARSET)
     print ("Server startup...")
 
-    while 1:
+    while 1:  
         connection,address = sock.accept()  #收到一个请求
 
         print ("-------------------------------------------")
-        print ("- Time: %s" % time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
+        print ("- Time: %s" % time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())) )
         print ("- 开始处理请求")
         print ("- ")
         #print ("client's IP:%s, PORT:%d" % address)
