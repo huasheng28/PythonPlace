@@ -33,29 +33,37 @@ img_width, img_height = 224, 256
 output_file = '/root/Dande/keras/output/keras_result_51.txt'
 # training weight path
 weights_path = '/root/Dande/keras/output/weights_theano_51.hdf5'
-
+# 梯度步长
 batch_size = 1
-
+# 50层残差网络模型，include_top：是否保留顶层的全连接网络，weights：None代表随机初始化，即不加载预训练权重
 base_model = ResNet50(include_top=False, weights=None)
+
 x = base_model.output
+# 为空域信号施加全局平均值池化
 x = GlobalAveragePooling2D()(x)
+# 建立模型
 predictions = Dense(51, activation='softmax')(x)
 model = Model(input=base_model.input, output=predictions)
+# 编译模型
 model.compile(optimizer=SGD(lr=0.01,momentum=0.9,decay=1e-6),loss='categorical_crossentropy',metrics=['accuracy'])
+# 从HDF5文件中加载权重到当前模型中
 model.load_weights(weights_path)
 
-lock=threading.RLock()
-
+# lock=threading.RLock()
 def predict(items=None):
     image_num = 0
     while True:
         image_batch = []
+        # 转换图片为PIL格式
         img = load_img(items, target_size=(img_width, img_height))
+        # 图片转为数组
         image_batch.append(img_to_array(img))
         image_batch_num = len(image_batch)
         if image_batch_num % batch_size == 0:
             break
     image_num += len(image_batch)
+
+    # 创建全零数组，uint8：无符号整数，0 至 255
     x_train = np.zeros(
         (len(image_batch),
          3,
@@ -63,15 +71,18 @@ def predict(items=None):
          img_height),
         dtype="uint8")
     y_train = np.zeros(len(image_batch), dtype="uint8")
+
+    # 列出索引序列，i为序号
     for i, img in enumerate(image_batch):
         x_train[i, :, :, :] = img
+    # 图片生成器ImageDataGenerator：用以生成一个batch的图像数据，支持实时数据提升。训练时该函数会无限生成数据，直到达到规定的epoch次数为止。
     predict_datagen = ImageDataGenerator(rescale=1. / 255)
+    # 接收numpy数组和标签为参数,生成经过数据提升或标准化后的batch数据,并在一个无限循环中不断的返回batch数据
     predict_gengerator = predict_datagen.flow(
         x_train, y_train, shuffle=False, batch_size=batch_size)
 
-    # lock.acquire()
+    # 从一个生成器上获取数据并进行预测
     result = model.predict_generator(predict_gengerator, batch_size)
-    # lock.release()
 
     return result[0].argmax(), int(result[0].max() * 10000)
 
