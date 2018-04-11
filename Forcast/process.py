@@ -45,11 +45,19 @@ x = GlobalAveragePooling2D()(x)
 predictions = Dense(51, activation='softmax')(x)
 model = Model(input=base_model.input, output=predictions)
 # 编译模型
-model.compile(optimizer=SGD(lr=0.01,momentum=0.9,decay=1e-6),loss='categorical_crossentropy',metrics=['accuracy'])
+model.compile(
+    optimizer=SGD(
+        lr=0.01,
+        momentum=0.9,
+        decay=1e-6),
+    loss='categorical_crossentropy',
+    metrics=['accuracy'])
 # 从HDF5文件中加载权重到当前模型中
 model.load_weights(weights_path)
 
 # lock=threading.RLock()
+
+
 def predict(items=None):
     image_num = 0
     while True:
@@ -286,7 +294,12 @@ class ProcessThread(threading.Thread):
 
         print("- ")
         print("- 完成处理请求")
-        print("- Time: %s" %time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
+        print(
+            "- Time: %s" %
+            time.strftime(
+                '%Y-%m-%d %H:%M:%S',
+                time.localtime(
+                    time.time())))
         print("-------------------------------------------")
 
         try:
